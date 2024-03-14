@@ -19,7 +19,7 @@
         // Function to send selected time frame and grid size to the bot
         $scope.sendData = function() {
             if ($scope.selectedTimeFrame !== '') {
-                window.Telegram.WebApp.switchInlineQuery($scope.selectedTimeFrame + ' ' + $scope.selectedGridSize);
+                window.Telegram.WebApp.switchInlineQuery('grid ' + $scope.selectedTimeFrame + ' ' + $scope.selectedGridSize);
             }
         };
 

@@ -8,43 +8,46 @@
       //initialize the AngularJS stuff...
       angular.module("custom-webapp-ui", []).controller('CustomUIController', function CustomUIController($scope) {
         // Grid size options
-        $scope.gridSizes = [3, 4, 5];
+        $scope.gridSizes = [3, 4, 5, 6, 7, 8];
 
         // Default grid size
         $scope.selectedGridSize = 3;
 
-        // Function to send selected time frame and grid size to the bot
-        $scope.sendData = function(timeFrame) {
-            window.Telegram.WebApp.requestWriteAccess('ruth');
-        };
+        // Selected time frame
+        $scope.selectedTimeFrame = '';
 
-        // Function to update grid size
-        $scope.updateGridSize = function() {
-            // No need to send data here, as the grid size change doesn't require sending data to the bot
+        // Function to send selected time frame and grid size to the bot
+        $scope.sendData = function() {
+            if ($scope.selectedTimeFrame !== '') {
+                window.Telegram.WebApp.switchInlineQuery($scope.selectedTimeFrame + ' ' + $scope.selectedGridSize);
+            }
         };
 
         // Initialize the button
         const mainButton = window.Telegram.WebApp.MainButton;
-        mainButton.text = "Save Preferences";
+        mainButton.text = "Send Data";
         mainButton.enable();
         mainButton.show();
-        
+
         // Handle button click to send data to the bot
         mainButton.onClick(function(){
-            // Placeholder function for future functionality if needed
+            $scope.sendData();
         });
       });
     </script>
   </head>
   <body ng-controller="CustomUIController">
     <h2>Grid Size:</h2>
-    <input type="range" min="3" max="5" ng-model="selectedGridSize" ng-change="updateGridSize()">
+    <input type="range" min="3" max="8" ng-model="selectedGridSize">
+
     <span>{{ selectedGridSize }}x{{ selectedGridSize }}</span>
 
     <h2>Choose a Time Frame:</h2>
-    <button ng-click="sendData('1w')">1 Week</button>
-    <button ng-click="sendData('1m')">1 Month</button>
-    <button ng-click="sendData('1y')">1 Year</button>
-    <button ng-click="sendData('overall')">Overall</button>
+    <button ng-click="selectedTimeFrame = 'PERIOD_7DAYS'">1 Week</button>
+    <button ng-click="selectedTimeFrame = 'PERIOD_1MONTH'">1 Month</button>
+    <button ng-click="selectedTimeFrame = 'PERIOD_3MONTHS'">3 Months</button>
+    <button ng-click="selectedTimeFrame = 'PERIOD_6MONTHS'">6 Months</button>
+    <button ng-click="selectedTimeFrame = 'PERIOD_12MONTHS'">12 Months</button>
+    <button ng-click="selectedTimeFrame = 'PERIOD_OVERALL'">Overall</button>
   </body>
 </html>

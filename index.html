@@ -15,7 +15,7 @@
 
         // Function to send selected time frame and grid size to the bot
         $scope.sendData = function(timeFrame) {
-            window.Telegram.WebApp.switchInlineQuery();
+            window.Telegram.WebApp.requestWriteAccess('ruth');
         };
 
         // Function to update grid size

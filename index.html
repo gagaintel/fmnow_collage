@@ -1,56 +1,75 @@
-<html ng-app="custom-webapp-ui" lang="en" style="background-color: white">
-  <head>
-    <!-- Load the Telegram Library -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!--Load the AngularJS Library-->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="shortcut icon" type="image/svg" href="../static/telegram.svg">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="../static/form-template/style.css">
+    <title>Form Demo</title>
     <script>
-      //initialize the AngularJS stuff...
-      angular.module("custom-webapp-ui", []).controller('CustomUIController', function CustomUIController($scope) {
-        // Grid size options
-        $scope.gridSizes = [3, 4, 5, 6, 7, 8];
-
-        // Default grid size
-        $scope.selectedGridSize = 3;
-
-        // Selected time frame
-        $scope.selectedTimeFrame = '';
-
-        // Function to send selected time frame and grid size to the bot
-        $scope.sendData = function() {
-            if ($scope.selectedTimeFrame !== '') {
-                window.Telegram.WebApp.sendData(JSON.stringify({ timeFrame: $scope.selectedTimeFrame, gridSize: $scope.selectedGridSize }));
+        function handleFormData() {
+            var name = document.getElementById("name").value;
+            var date = document.getElementById("date").value;
+            var email = document.getElementById("email").value;
+            var country = document.getElementById("country").value;
+            fetch('/demoFormResponse', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name, date: date,
+                    email: email, country: country,
+                    initData: window.Telegram.WebApp.initData
+                })
             }
-        };
-
-        // Initialize the button
-        const mainButton = window.Telegram.WebApp.MainButton;
-        mainButton.text = "Send Data";
-        mainButton.enable();
-        mainButton.show();
-        
-        // Handle button click to send data to the bot
-        mainButton.onClick(function(){
-            $scope.sendData();
-        });
-      });
+            )
+        }
     </script>
-  </head>
-  <body ng-controller="CustomUIController">
-    <h2>Grid Size:</h2>
-    <input type="range" min="3" max="8" ng-model="selectedGridSize">
+</head>
 
-    <span>{{ selectedGridSize }}x{{ selectedGridSize }}</span>
+<body>
 
-    <h2>Choose a Time Frame:</h2>
-    <button ng-click="selectedTimeFrame = 'PERIOD_7DAYS'">1 Week</button>
-    <button ng-click="selectedTimeFrame = 'PERIOD_1MONTH'">1 Month</button>
-    <button ng-click="selectedTimeFrame = 'PERIOD_3MONTHS'">3 Months</button>
-    <button ng-click="selectedTimeFrame = 'PERIOD_6MONTHS'">6 Months</button>
-    <button ng-click="selectedTimeFrame = 'PERIOD_12MONTHS'">12 Months</button>
-    <button ng-click="selectedTimeFrame = 'PERIOD_OVERALL'">Overall</button>
+    <div class="container">
+        <div class="forms">
+            <div class="form signup">
+                <span class="title">Demo Form</span>
 
-    <br><br>
-    <button ng-click="sendData()">Send Data</button>
-  </body>
+                <form onsubmit="handleFormData()">
+                    <div class="input-field">
+                        <input type="text" placeholder="Enter your name" id="name" required>
+                        <i class="uil uil-user"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="text" placeholder="Enter your email" id="email" required>
+                        <i class="uil uil-envelope icon"></i>
+                    </div>
+                    <div class="input-field">
+                        <input placeholder="Date of birth" type="text" onfocus="(this.type='date')" id="date" required>
+                        <i class="uil uil-calendar-alt"></i>
+                    </div>
+                    <div class="input-field">
+                        <input type="country" class="country" placeholder="Enter your country" id="country" required>
+                        <i class="uil uil-location-point"></i>
+                    </div>
+                    <div class="input-field button">
+                        <input type="submit" value="Continue">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const container = document.querySelector(".container");
+        container.classList.add("active");
+        Telegram.WebApp.ready()
+        Telegram.WebApp.expand()
+    </script>
+</body>
+
 </html>

@@ -7,29 +7,44 @@
     <script>
       //initialize the AngularJS stuff...
       angular.module("custom-webapp-ui", []).controller('CustomUIController', function CustomUIController($scope) {
-        //init our slider values that we will display
-        $scope.foods = [
-                { name: "fruits", value: 5 },
-                { name: "vegetables", value: 5 },
-                { name: "meat", value: 5 },
-                { name: "dairy", value: 5 }
-            ];
-        //initialize the button
+        // Grid size options
+        $scope.gridSizes = [3, 4, 5];
+
+        // Default grid size
+        $scope.selectedGridSize = 3;
+
+        // Function to send selected time frame and grid size to the bot
+        $scope.sendData = function(timeFrame) {
+            window.Telegram.WebApp.switchInlineQuery();
+        };
+
+        // Function to update grid size
+        $scope.updateGridSize = function() {
+            // No need to send data here, as the grid size change doesn't require sending data to the bot
+        };
+
+        // Initialize the button
         const mainButton = window.Telegram.WebApp.MainButton;
         mainButton.text = "Save Preferences";
         mainButton.enable();
         mainButton.show();
-        // and make it send the "foods" object (as JSON string) back to the bot
+        
+        // Handle button click to send data to the bot
         mainButton.onClick(function(){
-          window.Telegram.WebApp.sendData(JSON.stringify($scope.foods));
-        })
+            // Placeholder function for future functionality if needed
+        });
       });
     </script>
   </head>
   <body ng-controller="CustomUIController">
-    <div ng-repeat="food in foods">
-      <div style="width: 100px; display: inline-block">{{food.name}} : {{food.value}}</div>
-      <input style="display: inline-block" type="range" min="1" max="10" ng-model="food.value" value="{{food.value}}">
-    </div>
+    <h2>Grid Size:</h2>
+    <input type="range" min="3" max="5" ng-model="selectedGridSize" ng-change="updateGridSize()">
+    <span>{{ selectedGridSize }}x{{ selectedGridSize }}</span>
+
+    <h2>Choose a Time Frame:</h2>
+    <button ng-click="sendData('1w')">1 Week</button>
+    <button ng-click="sendData('1m')">1 Month</button>
+    <button ng-click="sendData('1y')">1 Year</button>
+    <button ng-click="sendData('overall')">Overall</button>
   </body>
 </html>
